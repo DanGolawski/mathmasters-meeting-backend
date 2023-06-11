@@ -19,16 +19,50 @@ def request_meeting():
         create_new_meeting(receiver, meeting_id)
         return jsonify({'message': 'success'}), 200
     except Exception as error:
-        return jsonify({'message': 'error'}), 404
+        return jsonify({'error': error}), 400
 
-@app.put('/meeting/start/<meeting_id>')
-def start_meeting(meeting_id):
+@app.put('/meeting/status')
+def start_meeting():
     try:
-        start_meeting_by_id(meeting_id)
-        return jsonify({'message': 'updated'}), 200
-    except Exception:
-        return jsonify({'message': 'error'}), 404
+        request_data = request.get_json()
+        current_status = get_status_of_meeting(request_data['meeting_id'])
+        if (status_is_present(current_status, request_data['new_status'])):
+            change_status_of_meeting(request_data['meeting_id'], request_data['new_status'])
+            return jsonify({'new_status': request_data['new_status']}), 200
+        else:
+            return jsonify({'new_status': current_status}), 200
+    except Exception as error:
+        return jsonify({'error': error}), 400
+
+@app.post('/meeting/close/<meeting_id>')
+def close_meeting(meeting_id):
+    try:
+        meeting = get_meeting_by_id(meeting_id)
+        message = create_message(meeting['client_email'], 'Tablica', get_content_of_mail_after_meeting())
+        message = add_attachment_to_message(message, request.files['image'].read())
+        send_message(message)
+        change_status_of_meeting(meeting_id, 'FINISHED')
+        return jsonify({'new_status': 'FINISHED'}), 200
+    except Exception as error:
+        return jsonify({'error': error}), 400
+
+@app.put('/meeting/cancel/<meeting_id>')
+def cancel_meeting(meeting_id):
+    try:
+        change_status_of_meeting(meeting_id, 'CANCELED')
+        return jsonify({'new_status': 'CANCELED'}), 200
+    except Exception as error:
+        return jsonify({'error': error}), 400
 
 @app.get('/waiting_clients')
 def get_waiting_clients():
-    sql_query = "SELECT * FROM meetings WHERE status = 'STARTED'"
+    try:
+        waiting_clients, longest_waiting = get_number_of_waiting_clients()
+        response = {
+            'waiting_clients': waiting_clients,
+            'longest_waiting_client': longest_waiting['meeting_id'] if longest_waiting != 0 else None
+        }
+        return jsonify(response), 200
+    except Exception as error:
+        return jsonify(error), 400
+

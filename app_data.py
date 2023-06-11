@@ -7,3 +7,5 @@ EMAIL_DATA = {
     'email': 'mathmasters.contact@gmail.com',
     'password': 'eubmxofncoaklwyw'
 }
+
+MEETING_STATUSES_FLOW = ['CREATED', 'STARTED', 'INPROGRESS', 'FINISHED']
