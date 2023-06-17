@@ -39,7 +39,8 @@ def close_meeting(meeting_id):
     try:
         meeting = get_meeting_by_id(meeting_id)
         message = create_message(meeting['client_email'], 'Tablica', get_content_of_mail_after_meeting())
-        message = add_attachment_to_message(message, request.files['image'].read())
+        jpg_data = convert_png_to_jpg(request.files['image'].stream, meeting_id)
+        message = add_attachment_to_message(message, jpg_data)
         send_message(message)
         change_status_of_meeting(meeting_id, 'FINISHED')
         return jsonify({'new_status': 'FINISHED'}), 200

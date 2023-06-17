@@ -3,6 +3,9 @@ from app_data import DATABASE_URLS
 from datetime import date
 from psycopg2.extras import RealDictCursor
 
+url_type = 'development'
+# url_type = 'production'
+
 def create_new_meeting(receiver, meeting_id):
     cursor, connection = open_connection()
     sql_query = f"INSERT INTO meetings (client_email, meeting_id, date) VALUES ('{receiver}', {meeting_id}, '{date.today()}');"
@@ -44,7 +47,7 @@ def get_meeting_by_id(meeting_id):
     return meeting
 
 def open_connection():
-    connection = psycopg2.connect(DATABASE_URLS['production'])
+    connection = psycopg2.connect(DATABASE_URLS[url_type])
     cursor = connection.cursor(cursor_factory=RealDictCursor)
     return cursor, connection
 

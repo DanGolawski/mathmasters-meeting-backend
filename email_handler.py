@@ -15,7 +15,7 @@ def create_message(receiver, subject, text):
 def add_attachment_to_message(message, file_base64):
     part = MIMEImage(file_base64)
     part.add_header('Content-Transfer-Encoding', 'base64')
-    part['Content-Disposition'] = 'attachment; filename="tablica.png"'
+    part['Content-Disposition'] = 'attachment; filename="tablica.jpg"'
     message.attach(part)
     return message
 

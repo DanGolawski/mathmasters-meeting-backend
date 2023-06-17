@@ -1,6 +1,18 @@
 from datetime import date, datetime
 import random
 from app_data import MEETING_STATUSES_FLOW
+from PIL import Image
+import base64
+import os
+
+def convert_png_to_jpg(data, meeting_id):
+    temporary_filename = f'TEMPORARY_BOARDS/board{meeting_id}.jpg'
+    im = Image.open(data)
+    im.save(temporary_filename, 'JPEG')
+    image_file = open(temporary_filename, "rb").read()
+    # jpg_base64 = base64.b64encode(image_file.read())
+    os.remove(os.path.join(temporary_filename))
+    return image_file
 
 def get_invitation_title():
     return f'Zaproszenie na korepetycje {get_current_date()}'
