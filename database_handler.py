@@ -55,7 +55,7 @@ def get_meeting_by_id(meeting_id):
     return meeting
 
 def open_connection():
-    connection = psycopg2.connect(DATABASE_URLS['production'])
+    connection = psycopg2.connect(DATABASE_URLS['development'])
     cursor = connection.cursor(cursor_factory=RealDictCursor)
     return cursor, connection
 
