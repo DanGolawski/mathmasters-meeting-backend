@@ -33,6 +33,7 @@ def change_meeting_status():
         else:
             return jsonify({'new_status': current_status}), 200
     except Exception as error:
+        print('<<<ERROR>>>', error)
         return jsonify({'error': error}), 400
 
 @app.post('/meeting/close/<meeting_id>')
@@ -45,6 +46,7 @@ def close_meeting(meeting_id):
         change_status_of_meeting(meeting_id, 'FINISHED')
         return jsonify({'new_status': 'FINISHED'}), 200
     except Exception as error:
+        print('<<<ERROR>>>', error)
         return jsonify({'error': error}), 400
 
 @app.put('/meeting/cancel/<meeting_id>')
@@ -53,6 +55,7 @@ def cancel_meeting(meeting_id):
         change_status_of_meeting(meeting_id, 'CANCELED')
         return jsonify({'new_status': 'CANCELED'}), 200
     except Exception as error:
+        print('<<<ERROR>>>', error)
         return jsonify({'error': error}), 400
 
 @app.get('/meetings/states')
@@ -67,6 +70,7 @@ def get_meetings_states():
         }
         return jsonify(response), 200
     except Exception as error:
+        print('<<<ERROR>>>', error)
         return jsonify(error), 400
 
 @app.get('/meetings/status/check/<meeting_id>')
