@@ -19,10 +19,11 @@ def request_meeting():
         create_new_meeting(receiver, meeting_id)
         return jsonify({'message': 'success'}), 200
     except Exception as error:
+        print('<<<ERROR>>>', error)
         return jsonify({'error': error}), 400
 
-@app.put('/meeting/status')
-def start_meeting():
+@app.put('/meetings/status/change')
+def change_meeting_status():
     try:
         request_data = request.get_json()
         current_status = get_status_of_meeting(request_data['meeting_id'])
@@ -54,15 +55,26 @@ def cancel_meeting(meeting_id):
     except Exception as error:
         return jsonify({'error': error}), 400
 
-@app.get('/waiting_clients')
-def get_waiting_clients():
+@app.get('/meetings/states')
+def get_meetings_states():
     try:
         waiting_clients, longest_waiting = get_number_of_waiting_clients()
+        planned_meetings_statuses = get_planned_meetings_statuses()
         response = {
             'waiting_clients': waiting_clients,
-            'longest_waiting_client': longest_waiting['meeting_id'] if longest_waiting != 0 else None
+            'longest_waiting_client': longest_waiting['meeting_id'] if longest_waiting != 0 else None,
+            'planned_meetings_statuses': planned_meetings_statuses
         }
         return jsonify(response), 200
     except Exception as error:
+        return jsonify(error), 400
+
+@app.get('/meetings/status/check/<meeting_id>')
+def check_meeting_status(meeting_id):
+    try:
+        status = check_meeting_status_by(meeting_id)
+        return jsonify({'status': status}), 200
+    except Exception as error:
+        print('<<<ERROR>>>', error)
         return jsonify(error), 400
 

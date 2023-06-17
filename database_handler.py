@@ -35,6 +35,17 @@ def get_number_of_waiting_clients():
     close_connection(cursor, connection)
     return number_of_clients, longest_waiting_meeting
 
+def check_meeting_status_by(meeting_id):
+    cursor, connection = open_connection()
+    sql_query = f"SELECT status FROM meetings WHERE meeting_id = {meeting_id}"
+    cursor.execute(sql_query)
+    status = cursor.fetchone()
+    close_connection(cursor, connection)
+    return status
+
+def get_planned_meetings_statuses():
+    return []
+
 def get_meeting_by_id(meeting_id):
     cursor, connection = open_connection()
     sql_query = f"SELECT * FROM meetings WHERE meeting_id = {meeting_id}"
